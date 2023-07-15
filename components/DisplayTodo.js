@@ -1,6 +1,24 @@
 import React, { Fragment } from "react";
 
 const DisplayTodo = ({ todos }) => {
+  const edittodo = async (item) => {
+    await fetch(`api/editData`, {
+      method: "POST",
+      body: JSON.stringify({
+        ...item,
+        status: "complete",
+      }),
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+  };
+
+  const deletehandler=async(item)=>{
+    const resp = await fetch(`/api/delete/${item.id}`, {
+        method: 'DELETE'
+      })
+  }
   return (
     <Fragment>
       {todos.map((item) => {
@@ -9,9 +27,15 @@ const DisplayTodo = ({ todos }) => {
             <div className="font-normal text-gray-700 dark:text-gray-400 flex justify-between ">
               <div>{item.todo}</div>
               <div className="flex space-x-3">
-                <div>Edit</div>
+                <div
+                  onClick={() => {
+                    edittodo(item.id);
+                  }}
+                >
+                  Edit
+                </div>
 
-                <div>Delete</div>
+                <div onClick={()=>{deletehandler(item)}}>Delete</div>
               </div>
             </div>
           </div>
@@ -20,6 +44,5 @@ const DisplayTodo = ({ todos }) => {
     </Fragment>
   );
 };
-
 
 export default DisplayTodo;
