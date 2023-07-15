@@ -12,6 +12,7 @@ export default function Home(props) {
     e.preventDefault();
     const obj = {
       todo: todoRef.current.value,
+      status:"incomplete"
     };
     const res = await fetch("api/addTodo", {
       method: "POST",
