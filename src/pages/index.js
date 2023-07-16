@@ -82,7 +82,9 @@ export async function getStaticProps() {
       todo: todo.map((item) => {
         return {
           todo: item.todo,
+          status:item.status.toString(),
           id: item._id.toString(),
+       
         };
       }),
     },

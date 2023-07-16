@@ -1,26 +1,33 @@
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 
-const handler = async (req, res) => {
-  if (req.method === "PUT") {
-    const data = req.body;
-    const client = await MongoClient.connect(
-    "mongodb+srv://kirtikumar0005:233186@cluster0.rnprxo8.mongodb.net/Todo?retryWrites=true&w=majority"
-    );
-    const db = client.db();
-    const meetupCollection = db.collection("todo");
+async function handler(req, res) {
+  console.log(req.body)
+  try {
+      // connect to the database
+      const client = await MongoClient.connect(
+        "mongodb+srv://kirtikumar0005:233186@cluster0.rnprxo8.mongodb.net/Todo?retryWrites=true&w=majority"
+        );
+        const db = client.db();
+      // update the published status of the post
+      await db.collection('todo').updateOne(
+          {
+              _id: new ObjectId(req.body),
+          },
+          { $set: { status: "completed" } }
+      );
 
-    const filter = { _id: req.body.id };
+      // return a message
+      return res.json({
+          message: 'Post updated successfully',
+          success: true,
+      });
+  } catch (error) {
 
-const updateDocument = {
-   $set: {
-      status: "complete",
-   },
-};
-const result = await myColl.updateOne(filter, updateDocument);
-    // const result = await meetupCollection.insertOne(data);
-
-    client.close();
-    res.status(201).json({ message: "meetups updated successfully" });
+      // return an error
+      return res.json({
+          message: new Error(error).message,
+          success: false,
+      });
   }
-};
+}
 export default handler;
